@@ -1,10 +1,11 @@
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'secretKey',
@@ -13,6 +14,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any, done: VerifiedCallback) {
-   done(null,user,payload.iat)
+    const user = await this.authService.validateUser(payload);
+    if (!user) {
+      done(
+        new HttpException(
+          'There is no user like that',
+          HttpStatus.UNAUTHORIZED,
+        ),
+        false,
+      );
+    }
+    done(null, user, payload.iat);
   }
 }

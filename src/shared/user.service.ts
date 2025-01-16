@@ -39,4 +39,8 @@ export class UserService {
       );
     }
   }
+  async findByPayload(payload: any) {
+    const { username } = payload;
+    return await this.userModel.findOne({ username });
+  }
 }
