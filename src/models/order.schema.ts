@@ -22,7 +22,7 @@ export const OrderSchema = new mongoose.Schema({
     },
   ],
   created: {
-    type: Date,
-    default: Date.now,
+    type: Date, // Corrige para usar 'type' ao invés de 'date'
+    default: Date.now, // Passa corretamente a função para 'default'
   },
 });
