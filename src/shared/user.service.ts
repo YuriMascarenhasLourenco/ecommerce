@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { loginDto, registerDto } from 'src/auth/dtos/auth.dto';
-import { User } from 'src/types/user';
+import { loginDto, registerDto } from '../auth/dtos/auth.dto';
+import { User } from '../types/user';
 import * as bcrypt from 'bcrypt';
+import { Payload } from 'src/types/payload';
 @Injectable()
 export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
@@ -12,8 +13,9 @@ export class UserService {
     return user.depopulate('password');
   }
   async create(userDto: registerDto) {
-    const username = userDto.username;
+    const { username } = userDto;
     const user = await this.userModel.findOne({ username });
+    console.log('typeof userDto:', typeof userDto.username);
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
@@ -23,7 +25,8 @@ export class UserService {
   }
   async findByLogin(userDto: loginDto) {
     const { username, password } = userDto;
-    const user = await this.userModel.findOne({ username });
+    const user = await this.userModel.findOne({ name: username });
+
     if (!user) {
       throw new HttpException(
         'this user doesn´t exist',
@@ -39,8 +42,11 @@ export class UserService {
       );
     }
   }
-  async findByPayload(payload: any) {
+  async findByPayload(payload: Payload) {
     const { username } = payload;
     return await this.userModel.findOne({ username });
+  }
+  async findAll() {
+    return await this.userModel.find({});
   }
 }
