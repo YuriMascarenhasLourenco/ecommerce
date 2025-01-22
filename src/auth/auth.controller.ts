@@ -13,17 +13,7 @@ export class AuthController {
     private UserService: UserService,
     private authService: AuthService,
   ) {}
-  @Get()
-  @UseGuards(AuthGuard('jwt'), sellerGuard)
-  findAll(@User() user: any) {
-    return this.UserService.findAll();
-  }
 
-  @Get()
-  @UseGuards(AuthGuard('jwt'))
-  tempAuth() {
-    return { auth: 'works' };
-  }
   @Post('login')
   async login(@Body() userDto: loginDto) {
     const user = await this.UserService.findByLogin(userDto);
