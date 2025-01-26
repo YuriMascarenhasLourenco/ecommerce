@@ -10,7 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'product',
+        name: 'Product',
         schema: ProductSchema,
       },
     ]),

@@ -12,9 +12,6 @@ export class CreateProductDto {
 
   @IsNumber()
   price: number;
-
-  @IsDate()
-  created: Date;
 }
 
 export class UpdateProductDto implements Partial<CreateProductDto> {}

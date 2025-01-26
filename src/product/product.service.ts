@@ -19,7 +19,11 @@ export class ProductService {
     return this.productModel.find({ owner: userId }).populate('owner');
   }
   async findOne(id: string) {
-    return await this.productModel.findById(id).populate('owner');
+    const product = await this.productModel.findById(id).populate('owner');
+    if (!product) {
+      throw new HttpException('product does not exist', HttpStatus.NO_CONTENT);
+    }
+    return product;
   }
   async create(productDto: CreateProductDto, user: User): Promise<Product> {
     const product = await this.productModel.create({
@@ -42,7 +46,7 @@ export class ProductService {
       );
     }
     await product.updateOne(productDto);
-    return product.populate('owner');
+    return (await this.productModel.findById(id)).populated('owner');
   }
   async delete(id: string, userId: string): Promise<Product> {
     const product = await this.productModel.findById(id);

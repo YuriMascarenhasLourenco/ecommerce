@@ -52,7 +52,7 @@ export class ProductController {
     @User() user: userDocument,
   ) {
     const { id: userId } = user;
-    return this.productService.update(id, productUpdate, userId);
+    return await this.productService.update(id, productUpdate, userId);
   }
 
   @Delete(':id')
